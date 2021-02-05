@@ -22,15 +22,10 @@ export default function Entries(props) {
     { title: 'Created At', field: 'createdAt' },
   ]);
 
-  const [data, setData] = useState([
-    { task: 'test 1', note: 'Test Note', duration: 12123, createdAt: 123123 },
-    { task: 'test 2', note: 'Test Note', duration: 12123, createdAt: 123123 },
-    { task: 'test 3', note: 'Test Note', duration: 12123, createdAt: 123123 },
-  ]);
+  const [data, setData] = useState([]);
 
   useEffect(() => {
-
-  });
+  }, [])
 
   return (
     <MaterialTable
@@ -38,25 +33,6 @@ export default function Entries(props) {
       columns={columns}
       data={data}
       editable={{
-        // onRowAdd: newData =>
-        //   new Promise((resolve, reject) => {
-        //     setTimeout(() => {
-        //       setData([...data, newData]);
-              
-        //       resolve();
-        //     }, 1000)
-        //   }),
-        onRowUpdate: (newData, oldData) =>
-          new Promise((resolve, reject) => {
-            setTimeout(() => {
-              const dataUpdate = [...data];
-              const index = oldData.tableData.id;
-              dataUpdate[index] = newData;
-              setData([...dataUpdate]);
-
-              resolve();
-            }, 1000)
-          }),
         onRowDelete: oldData =>
           new Promise((resolve, reject) => {
             setTimeout(() => {
