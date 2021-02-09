@@ -45,8 +45,11 @@ export default function Timer() {
   const [isTicking, setIsTicking] = useState(false)
   const [timeSec, setTimeSec] = useState(0)
   const [timeMin, setTimeMin] = useState(0)
-  const [taskName, setTaskName] = useState()
-  const [taskNote, setTaskNote] = useState()
+  const defaultTaskValues = {
+    taskName: '',
+    taskNote: '',
+  };
+  const [ taskValues, setTaskValues] = useState(defaultTaskValues);
 
   const formatTime = (val) => {
     let value = val.toString();
@@ -64,24 +67,46 @@ export default function Timer() {
     setIsTicking(false)
   }
 
-  const handleReset = () => {
+  const reset = () => {
     setTimeSec(0)
     setTimeMin(0)
     setIsTicking(false)
+    setTaskValues({ taskName: '', taskNote: '' });
   }
 
   const handleSave = () => {
 
     let duration = `${formatTime(timeMin)}:${formatTime(timeSec)}`;
-    let task = taskName
-    let note = taskNote 
-    let createdAt = moment().format( "LLL" )
-    console.log(timeSec)
-    console.log(timeMin)
-    console.log(taskName)
-    console.log(taskNote)
-    console.log(createdAt)
 
+    let createdAt = moment().format( "LLL" )
+
+    const newEntry = {
+      task: taskValues.taskName,
+      note: taskValues.taskNote,
+      duration: duration,
+      createdAt, createdAt
+    }
+
+    const entries = []
+    if (localStorage.getItem('entries') !== null) {
+      let entriesSoFar = JSON.parse(localStorage.getItem('entries'));
+      entries.push(entriesSoFar);
+    }
+    entries.push(newEntry);
+    localStorage.setItem('entries',JSON.stringify(entries));
+
+    reset();
+  }
+
+  const onChangeHandler = (e) => {
+
+    const { name, value } = e.target;
+
+    setTaskValues({
+      ...taskValues,
+      [name]: value,
+    });
+    
   }
 
   useEffect(() => {
@@ -103,14 +128,12 @@ export default function Timer() {
     <div className={classes.root}>
       <Grid container spacing={3}>
           <Grid item xs className={classes.inputContainer}>
-
             <span className={classes.inputEl}>
-              <TextField id="task" label="Task"/>
+              <TextField id="task" label="Task" name="taskName" onChange={onChangeHandler} value={taskValues.taskName} />
             </span>
             <span className={classes.inputEl}>
-              <TextField id="note" label="Note" fullWidth/>
+              <TextField id="note" label="Note" name="taskNote" onChange={onChangeHandler} value={taskValues.taskNote} />
             </span>
-
           </Grid>
           <Grid item xs={6}>
 
@@ -125,7 +148,7 @@ export default function Timer() {
             <Button className={classes.startButton} onClick={handleStart} variant="outlined" color={isTicking ? 'secondary' : 'primary'}>
               {isTicking ? 'Stop': 'Start'}
             </Button>
-            <Button onClick={handleReset} size="small" variant="filled" color="primary">
+            <Button onClick={reset} size="small" variant="filled" color="primary">
               Reset
             </Button>
             <IconButton color="primary" onClick={handleSave} aria-label="Save" component="span" disabled={timeSec > 0 && isTicking == false ? false:true}>
