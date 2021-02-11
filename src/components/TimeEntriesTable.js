@@ -3,9 +3,8 @@ import MaterialTable from 'material-table'
 
 export default function Entries(props) {
 
-  const { useState } = React;
-
   const [columns, setColumns] = useState([
+    { title: '', field: 'id', hidden: true },
     {
       title: 'Task', field: 'task',
       editComponent: props => (
@@ -18,30 +17,37 @@ export default function Entries(props) {
     },
     { title: 'Note', field: 'note' },
     { title: 'Duration', field: 'duration' },
-    { title: '', field: 'isTicking', hidden: true },
-    { title: 'Created At', field: 'createdAt' },
+    { title: 'Created At', field: 'createdAt', defaultSort: 'desc' },
   ]);
 
   const [data, setData] = useState([]);
 
+  const handleChange = (id) => {
+    let entries = JSON.parse(localStorage.getItem('ft_entries'));
+    let newEntries = entries.filter(entry => {
+      return entry.id !== id;
+    })
+    setData(newEntries)
+    localStorage.setItem('ft_entries', JSON.stringify(newEntries))
+    props.handleChange(newEntries);
+  }
+
   useEffect(() => {
-  }, [])
+
+    setData(props.data)
+
+  }, [props])
 
   return (
     <MaterialTable
-      title="Time Entries"
+      title=""
       columns={columns}
       data={data}
       editable={{
         onRowDelete: oldData =>
           new Promise((resolve, reject) => {
             setTimeout(() => {
-              const dataDelete = [...data];
-              const index = oldData.tableData.id;
-              dataDelete.splice(index, 1);
-              setData([...dataDelete]);
-
-              resolve();
+              resolve(handleChange(oldData.id));
             }, 1000)
           }),
       }}

@@ -6,6 +6,7 @@ import TextField from '@material-ui/core/TextField';
 import SaveIcon from '@material-ui/icons/Save';
 import IconButton from '@material-ui/core/IconButton';
 import moment from 'moment';
+import TimeEntriesTable from './TimeEntriesTable';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,14 +22,22 @@ const useStyles = makeStyles((theme) => ({
       marginBottom: theme.spacing(2),
     },
   },
-  inputContainer: {
-    display: 'flex',
+  tableContainer: {
+    '& > *': {
+      padding: '2rem'
+    }
+  },
+  btnGroup: {
+    paddingTop: theme.spacing(1)
   },
   container: {
     width: '100%',
   },
   timer: {
-    fontSize: '36px'
+    fontSize: '80px',
+    ['@media (max-width:780px)']: { 
+      fontSize: '65px',
+    }
   },
   inputEl: {
     marginLeft: theme.spacing(1),
@@ -42,6 +51,8 @@ const useStyles = makeStyles((theme) => ({
 export default function Timer() {
   const classes = useStyles();
 
+  const initialData = (localStorage.getItem('ft_entries') == null) ? [] : JSON.parse(localStorage.getItem('ft_entries'))
+  const [tableData, setTableData] = useState(initialData)
   const [isTicking, setIsTicking] = useState(false)
   const [timeSec, setTimeSec] = useState(0)
   const [timeMin, setTimeMin] = useState(0)
@@ -73,6 +84,9 @@ export default function Timer() {
     setIsTicking(false)
     setTaskValues({ taskName: '', taskNote: '' });
   }
+  const handleChange = (data) => {
+    setTableData(data)
+  }
 
   const handleSave = () => {
 
@@ -81,6 +95,7 @@ export default function Timer() {
     let createdAt = moment().format( "LLL" )
 
     const newEntry = {
+      id: Date.now(),
       task: taskValues.taskName,
       note: taskValues.taskNote,
       duration: duration,
@@ -88,13 +103,15 @@ export default function Timer() {
     }
 
     const entries = []
-    if (localStorage.getItem('entries') !== null) {
-      let entriesSoFar = JSON.parse(localStorage.getItem('entries'));
-      entries.push(entriesSoFar);
+    if (localStorage.getItem('ft_entries') !== null) {
+      let entriesSoFar = JSON.parse(localStorage.getItem('ft_entries'));
+      for (let item in entriesSoFar) {
+        entries.push(entriesSoFar[item])
+      }
     }
     entries.push(newEntry);
-    localStorage.setItem('entries',JSON.stringify(entries));
-
+    localStorage.setItem('ft_entries',JSON.stringify(entries));
+    setTableData(entries)
     reset();
   }
 
@@ -125,37 +142,46 @@ export default function Timer() {
   }, [isTicking, timeSec, timeMin]);
 
   return (
+    <>
     <div className={classes.root}>
       <Grid container spacing={3}>
-          <Grid item xs className={classes.inputContainer}>
-            <span className={classes.inputEl}>
-              <TextField id="task" label="Task" name="taskName" onChange={onChangeHandler} value={taskValues.taskName} />
-            </span>
-            <span className={classes.inputEl}>
-              <TextField id="note" label="Note" name="taskNote" onChange={onChangeHandler} value={taskValues.taskNote} />
-            </span>
-          </Grid>
           <Grid item xs={6}>
-
             <span>
               <div className={classes.timer}>
                 <span>{formatTime(timeMin)} : {formatTime(timeSec)}</span>
               </div>
             </span>
-
           </Grid>
+
           <Grid item xs className={classes.inputContainer}>
-            <Button className={classes.startButton} onClick={handleStart} variant="outlined" color={isTicking ? 'secondary' : 'primary'}>
-              {isTicking ? 'Stop': 'Start'}
-            </Button>
-            <Button onClick={reset} size="small" variant="filled" color="primary">
-              Reset
-            </Button>
-            <IconButton color="primary" onClick={handleSave} aria-label="Save" component="span" disabled={timeSec > 0 && isTicking == false ? false:true}>
-              <SaveIcon />
-            </IconButton>
+
+            <Grid item xs className={classes.inputContainer}>
+              <span className={classes.inputEl}>
+                <TextField id="task" label="Task" name="taskName" onChange={onChangeHandler} value={taskValues.taskName} />
+              </span>
+              <span className={classes.inputEl}>
+                <TextField id="note" label="Note" name="taskNote" onChange={onChangeHandler} value={taskValues.taskNote} />
+              </span>
+            </Grid> 
+
+            <div className={classes.btnGroup}>
+              <Button className={classes.startButton} onClick={handleStart} variant="outlined" disabled={taskValues.taskName == ''} color={isTicking ? 'secondary' : 'primary'}>
+                {isTicking ? 'Stop': 'Start'}
+              </Button>
+              <Button onClick={reset} size="small" variant="filled" color="primary">
+                Reset
+              </Button>
+              <IconButton color="primary" onClick={handleSave} aria-label="Save" component="span" disabled={timeSec > 0 && isTicking == false ? false:true}>
+                <SaveIcon />
+              </IconButton>
+            </div>
+
           </Grid>
       </Grid>
     </div>
+    <div className={classes.tableContainer}> 
+       <TimeEntriesTable data={tableData} handleChange={handleChange}/>
+    </div>
+    </>
   );
 }
