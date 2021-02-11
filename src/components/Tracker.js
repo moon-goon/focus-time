@@ -56,6 +56,7 @@ export default function Timer() {
   const [isTicking, setIsTicking] = useState(false)
   const [timeSec, setTimeSec] = useState(0)
   const [timeMin, setTimeMin] = useState(0)
+  const [timeHour, setTimeHour] = useState(0)
   const defaultTaskValues = {
     taskName: '',
     taskNote: '',
@@ -81,6 +82,7 @@ export default function Timer() {
   const reset = () => {
     setTimeSec(0)
     setTimeMin(0)
+    setTimeHour(0)
     setIsTicking(false)
     setTaskValues({ taskName: '', taskNote: '' });
   }
@@ -90,7 +92,7 @@ export default function Timer() {
 
   const handleSave = () => {
 
-    let duration = `${formatTime(timeMin)}:${formatTime(timeSec)}`;
+    let duration = `${formatTime(timeHour)}:${formatTime(timeMin)}:${formatTime(timeSec)}`;
 
     let createdAt = moment().format( "LLL" )
 
@@ -135,6 +137,10 @@ export default function Timer() {
           setTimeSec(0)
           setTimeMin(timeMin + 1)
         }
+        if (timeMin >= 60) {
+          setTimeMin(0)
+          setTimeHour(timeHour + 1)
+        }
       }, 1000);
       return () => clearInterval(interval);
     }
@@ -148,7 +154,7 @@ export default function Timer() {
           <Grid item xs={6}>
             <span>
               <div className={classes.timer}>
-                <span>{formatTime(timeMin)} : {formatTime(timeSec)}</span>
+                <span> {formatTime(timeHour)} : {formatTime(timeMin)} : {formatTime(timeSec)}</span>
               </div>
             </span>
           </Grid>
