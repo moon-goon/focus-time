@@ -133,11 +133,11 @@ export default function Timer() {
     if (isTicking) {
       const interval = setInterval(() => {
         setTimeSec(timeSec + 1)
-        if (timeSec >= 60) {
+        if (timeSec >= 59) {
           setTimeSec(0)
           setTimeMin(timeMin + 1)
         }
-        if (timeMin >= 60) {
+        if (timeMin >= 59) {
           setTimeMin(0)
           setTimeHour(timeHour + 1)
         }
