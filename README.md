@@ -9,7 +9,7 @@ This app will use local storage in the browser to store your time entry data<br/
 - Webpack
 - Material UI
 
-<p><b>Stuff on my to-do list:</b></p>
+<p><b>To do:</b></p>
 
 - Data plotting (bar chart, for example)
 - Google Sheets API integration (login with Google & creat spreahsheet to persist data)
@@ -18,8 +18,16 @@ This app will use local storage in the browser to store your time entry data<br/
 
 ## Usage
 
-In the project root folder
+In the project root folder, 
 
+Install packages:
+
+```bash
+npm install
+
+```
+
+Start dev server:
 ```bash
 npm run dev
 
