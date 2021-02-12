@@ -5,16 +5,7 @@ export default function Entries(props) {
 
   const [columns, setColumns] = useState([
     { title: '', field: 'id', hidden: true },
-    {
-      title: 'Task', field: 'task',
-      editComponent: props => (
-        <input
-          type="text"
-          value={props.value}
-          onChange={e => props.onChange(e.target.value)}
-        />
-      )
-    },
+    { title: 'Task', field: 'task' },
     { title: 'Note', field: 'note' },
     { title: 'Duration', field: 'duration' },
     { title: 'Created At', field: 'createdAt', defaultSort: 'desc' },

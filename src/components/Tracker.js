@@ -174,7 +174,7 @@ export default function Timer() {
               <Button className={classes.startButton} onClick={handleStart} variant="outlined" disabled={taskValues.taskName == ''} color={isTicking ? 'secondary' : 'primary'}>
                 {isTicking ? 'Stop': 'Start'}
               </Button>
-              <Button onClick={reset} size="small" variant="filled" color="primary">
+              <Button onClick={reset} size="small">
                 Reset
               </Button>
               <IconButton color="primary" onClick={handleSave} aria-label="Save" component="span" disabled={timeSec > 0 && isTicking == false ? false:true}>
