@@ -34,6 +34,9 @@ export default function Entries(props) {
       title=""
       columns={columns}
       data={data}
+      options={
+        { 'padding' : 'dense', }
+      }
       editable={{
         onRowDelete: oldData =>
           new Promise((resolve, reject) => {

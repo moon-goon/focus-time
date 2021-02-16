@@ -7,6 +7,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import IconButton from '@material-ui/core/IconButton';
 import moment from 'moment';
 import TimeEntriesTable from './TimeEntriesTable';
+import BarChart from './BarChart';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -186,6 +187,7 @@ export default function Timer() {
       </Grid>
     </div>
     <div className={classes.tableContainer}> 
+       {/* <BarChart data={tableData}/> */}
        <TimeEntriesTable data={tableData} handleChange={handleChange}/>
     </div>
     </>
